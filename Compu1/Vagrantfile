@@ -1,0 +1,24 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+Vagrant.configure("2") do |config|
+
+    config.vm.define :ubuntu1A do |ubuntu1A|
+	ubuntu1A.vm.box = "bento/ubuntu-20.04"
+	ubuntu1A.vm.network :private_network, ip: "192.168.100.20"
+	ubuntu1A.vm.hostname = "ubuntu1A"
+	ubuntu1A.vm.provision "shell", path: "script.sh"
+    end
+
+    config.vm.define :ubuntu2A do |ubuntu2A|
+	ubuntu2A.vm.box = "bento/ubuntu-20.04"
+	ubuntu2A.vm.network :private_network, ip: "192.168.100.21"
+	ubuntu2A.vm.hostname = "ubuntu2A"
+    end
+
+    config.vm.define :ubuntu3A do |ubuntu3A|
+	ubuntu3A.vm.box = "bento/ubuntu-20.04"
+	ubuntu3A.vm.network :private_network, ip: "192.168.100.22"
+	ubuntu3A.vm.hostname = "ubuntu3A"
+    end
+
+end

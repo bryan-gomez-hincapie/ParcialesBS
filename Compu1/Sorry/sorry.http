@@ -1,0 +1,11 @@
+HTTP/1.0 200 OK
+Cache-Control: no-cache
+Connection: close
+Content-Type: text/html
+
+<html>
+	<body>
+		<h1>Lo sentimos pagina no disponible</h1>
+		Disculpe por la molestia 
+	</body>
+</html>
