@@ -1,0 +1,120 @@
+Bryan Gomez - Santiago Cifuentes
+
+CONFIGURACIÓN DEL CLUSTER
+
+Se inició creando el cluster en la MV ubuntu1A, ejecutando las siguientes acciones:
+“sudo snap install lxd”									→ enter
+			
+“sudo gpasswd -a vagrant lxd”								→ enter
+
+“exit”											→ enter
+
+vagrant ssh ubuntu1A 									→ enter
+ 
+“lxd init”										→ enter
+
+Would you like to use LXD clustering? (yes/no) [default=no]:				“yes” → enter
+
+
+What name should be used to identify this node in the cluster? [default=ubuntu1A]:	→ enter
+
+
+What IP address or DNS name should be used to reach this node? [default=10.0.2.15]:	“192.168.100.20” → enter
+
+Are you joining an existing cluster? (yes/no) [default=no]:				→ enter
+
+Setup password authentication on the cluster? (yes/no) [default=yes]:			→ enter
+
+
+Trust password for new clients:								“admin” → enter
+
+
+Again:											“admin” → enter
+
+
+Do you want to configure a new local storage pool?					→ enter
+
+
+Name of the storage backend to use (btrfs, dir, lvm) [default=btrfs]:		 	“dir” → enter
+
+
+Do you want to configure a new remote storage pool?  (yes/no) [default=no]:		→ enter
+
+
+Would you like to connect to a MAAS server? (yes/no) [default=no]: 			→ enter
+
+
+Would you like to configure LXD to use an existing bridge or host interface? (yes/no) [default=no]:	→ enter
+
+
+Would you like to create a new Fan overlay network? (yes/no) [default=yes]:		→ enter
+
+
+What subnet should be used as the Fan underlay? [default=auto]:				→ enter
+
+
+Would you like stale cached images to be updated automatically? (yes/no) [default=yes]:	→ enter
+
+
+Would you like a YAML "lxd init" preseed to be printed? (yes/no) [default=no]:		→ enter
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Después se agregaron al cluster las MV ubuntu2A y ubuntu3A implementando los siguientes pasos:
+“sudo snap install lxd”									→ enter
+
+
+“sudo gpasswd -a vagrant lxd”								→ enter
+
+“exit”											→ enter
+
+vagrant ssh ubuntu2A-3A									→ enter
+
+“lxd init”										→ enter
+
+>Would you like to use LXD clustering? (yes/no) [default=no]:				“yes” → enter
+
+What name should be used to identify this node in the cluster? [default=ubuntu2A-3A]:	→ enter
+
+
+What IP address or DNS name should be used to reach this node? [default=10.0.2.15]:	“192.168.100.21-22” → enter
+
+
+Are you joining an existing cluster? (yes/no) [default=no]:				“yes” → enter
+
+
+IP address or FQDN of an existing cluster node:						“192.168.100.20” → enter
+
+
+Is this  the correct fingerprint  (yes/no) [default=no]:				 “yes” → enter
+
+
+Cluster trust password:									“admin” → enter
+
+
+All existing data is lost when joining a cluster					“yes” → enter
+
+
+Choose the local disk or dataset for storage pool “local” (empty for loop disk):	→ enter
+
+
+Would you like a YAML “lxd init” preseed to be printed? (yes/no) [default=no]		→ enter
+
+
+
+Después de hacer la conexión entre los servidores y el cluster se configura la IP de la red, colocando red correspondiente donde se encuentras las MV:
+“lxc  network edit lxcfan0”
+En la sesión de config: se modifica fan.underlay_subnet por la del cluster 192.168.100.0/24
+
+Después de esto se hace el aprovisionamiento de los contenedores para los tres maquinas vagrant y crea los contenedores
