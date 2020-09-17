@@ -1,0 +1,96 @@
+GLOSARIO:
+tftp-server: Trivial file transfer Protocol-Server, se usa para transferir pequeños archivos entre computadoras en una red, como cuando un terminal o cliente ligero arranca desde un servidor de red.
+syslinux: Conjunto de gestores de arranque ligeros, para arrancar ordenadores en el sistema operativo Linux.
+vsftpd: Servidor FTP para sistemas tipo Unix.
+xinetd  (eXtended InterNET Daemon): Demonio extendido de internet, es un servicio/demonio que usan gran parte de los sistemas Unix dedicado a administrar la conectividad basada en Internet.
+__________________________________________________________________________________
+
+Paso 1
+Creación de Vagrantfile y descarga de archivo .iso en carpeta sincronizada
+( CentOS-7-x86_64.iso ) 
+
+Paso 2
+Levantar MV e ingresar a esta
+
+Paso 3
+Deshabilitar firewall y el SELinux para que se ejecute bien el servidor FTP
+/etc/selinux/config						→ SELINUX=disabled
+
+systemctl stop firewalld
+systemctl disable firewalld
+
+Paso 4
+Instalación de paquetes requeridos dentro de la MV creada.
+yum install dhcp tftp tftp-server syslinux vsftpd xinetd vim
+
+Paso 5
+Configuración del servidor DHCP para el PXE
+vim /etc/dhcp/dhcpd.conf						**
+
+Paso 6
+Configuración  del servidor TFTP, se cambia el parámetro disable de yes a no con el fin de especificar que el servicio arranca cuando inicia xinetd.
+vim /etc/xinetd.d/tftp						**
+
+Paso 7
+Instalación de archivos de arranque de red en directorio raíz del TFTP
+cp -v /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot
+cp -v /usr/share/syslinux/menu.c32 /var/lib/tftpboot
+cp -v /usr/share/syslinux/memdisk /var/lib/tftpboot
+cp -v /usr/share/syslinux/mboot.c32 /var/lib/tftpboot
+cp -v /usr/share/syslinux/chain.c32 /var/lib/tftpboot
+mkdir /var/lib/tftpboot/pxelinux.cfg
+mkdir /var/lib/tftpboot/networkboot
+
+Paso 8
+Montar y copiar contenido de .iso desde el directorio donde se encuentra al del servidor FTP local.
+mount -o loop CentOS-7-x86_64.iso /mnt/
+cd /mnt/
+cp -av * /var/ftp/pub/
+
+Paso 9
+Copiar archivo Kernel (vmlinuz) y archivo initrd .iso al TFTP
+cp /mnt/images/pxeboot/vmlinuz /var/lib/tftpboot/networkboot/
+cp /mnt/images/pxeboot/initrd.img /var/lib/tftpboot/networkboot/
+		Desmontar archivo .iso
+umount /mnt/
+ 
+Paso 10
+Crear contraseña de root en cadena cifrada y archivo kickStart.
+openssl passwd -1 Pxe@123#
+
+vim /var/ftp/pub/centos7.cfg					**
+
+Paso 11
+Crear archivo de menú PXE.
+vim /var/lib/tftpboot/pxelinux.cfg/default				**
+
+Paso12
+Iniciar y habilitar los servicios xinetd, dhcp y vsftpd.
+systemctl start xinetd
+systemctl enable xinetd
+systemctl start dhcpd.service
+systemctl enable dhcpd.service
+systemctl start vsftpd
+systemctl enable vsftpd
+
+Paso 13
+Crear y configurar MV cliente PXE desde VirtualBox
+Tipo: Linux
+Versión: Other Linux (64-bit)
+Tamaño de memoria RAM: 2048 MB
+Disco duro: nuevo disco duro virtual
+Tipo de archivo de disco duro: VDI
+Tamaño de archivo: 8 GB
+
+Paso 14
+Abrir cliente PXE desde VirtualBox
+__________________________________________________________________________________
+Archivo .iso fue descargado del siguiente enlace:
+http://mirror.unimagdalena.edu.co/centos/7.8.2003/isos/x86_64/CentOS-7-x86_64-NetInstall-2003.iso
+Los caracteres ** hacen referencia a que se agregó o modificó contenido del archivo.
+Especificación de parámetros del xinetd/tftp: https://bytelearning.blogspot.com/2017/01/como-crear-servidor-tftp-linux.html
+El trabajó se realizó con ayuda de la información brindada en el siguiente enlace:
+https://www.linuxparty.es/29-internet/10072-configure-el-servidor-de-instalacion-pxe-arranque-de-red-en-centos-7-x
+__________________________________________________________________________________
+
+
