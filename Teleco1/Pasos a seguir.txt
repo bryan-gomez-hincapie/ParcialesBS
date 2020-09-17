@@ -1,3 +1,5 @@
+PARCIAL1 TELECO3 SERVIDOR PXE: SANTIAGO CIFUENTES GOMEZ - BRYAN GOMEZ HINCAPIE
+
 GLOSARIO:
 tftp-server: Trivial file transfer Protocol-Server, se usa para transferir pequeños archivos entre computadoras en una red, como cuando un terminal o cliente ligero arranca desde un servidor de red.
 syslinux: Conjunto de gestores de arranque ligeros, para arrancar ordenadores en el sistema operativo Linux.
